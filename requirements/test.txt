@@ -1,0 +1,3 @@
+-r common.txt
+-r compiled.txt
+coverage==5.3

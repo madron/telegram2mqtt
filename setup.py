@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 from telegram2mqtt import version
 
-file_name = os.path.join('requirements.txt')
+file_name = os.path.join('requirements/common.txt')
 with open(file_name, 'r') as r:
     requirements = [l for l in r.read().splitlines()]
 

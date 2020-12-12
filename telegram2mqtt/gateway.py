@@ -1,22 +1,20 @@
 import logging
-import os
-
-
-logger = logging.getLogger()
+from telegram2mqtt.telegram import TelegramBot
 
 
 class Gateway:
-    def __init__(self, **kwargs):
-        pass
+    def __init__(self, token=None):
+        self.logger = logging.getLogger('Gateway')
+        self.bot = TelegramBot(token=token)
 
     async def start(self):
         try:
-            logger.info('Started')
+            self.logger.info('Started')
         except:
-            logger.exception('start')
+            self.logger.exception('start')
 
     async def stop(self):
         try:
-            logger.info('Stopped')
+            self.logger.info('Stopped')
         except:
-            logger.exception('stop')
+            self.logger.exception('stop')

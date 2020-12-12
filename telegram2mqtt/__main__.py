@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import logging
+import os
 from telegram2mqtt.gateway import Gateway
 
 
@@ -12,24 +13,25 @@ LOGLEVEL_CHOICES = [
     'ERROR',
     'CRITICAL',
 ]
+TELEGRAM_API_TOKEN = os.getenv('TELEGRAM_API_TOKEN', None)
 
 
 def main():
     # ArgumentParser
     parser = argparse.ArgumentParser(prog='telegram2mqtt', description='Telegram to Mqtt gateway')
+    parser.add_argument('-t', '--token', metavar='TOKEN', type=str,
+                        default=TELEGRAM_API_TOKEN, help='Telegram api token. Default from TELEGRAM_API_TOKEN env var.')
     parser.add_argument('--loglevel', metavar='LEVEL', type=str,
                         default=DEFAULT_LOGLEVEL, choices=LOGLEVEL_CHOICES,
                         help="Log level. Default: '{}'".format(DEFAULT_LOGLEVEL))
-    parser.add_argument('--debug', action='store_true')
 
     kwargs = vars(parser.parse_args())
+    if not kwargs['token']:
+        exit(parser.print_usage())
 
     # Log config
-    logging.basicConfig(level=kwargs['loglevel'], format='%(levelname)-8s %(message)s')
-
-    logging.debug('Arguments')
-    logging.debug('kwargs: {}'.format(kwargs))
-
+    loglevel = kwargs.pop('loglevel')
+    logging.basicConfig(level=loglevel, format=' %(levelname)-8s %(name)s %(message)s')
 
     # Gateway
     gateway = Gateway(**kwargs)
