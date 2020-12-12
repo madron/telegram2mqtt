@@ -10,12 +10,17 @@ class TelegramBot:
     async def make_request(self, method_name, method='get', params=dict(), files=None, timeout=10):
         url = 'https://api.telegram.org/bot{token}/{method_name}'.format(token=self.token, method_name=method_name)
         self.logger.debug('make_request - {method} {method_name}'.format(method=method, method_name=method_name))
+        assert method in ('get', 'post')
 
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=timeout)) as session:
-            async with session.get(url, params=params) as response:
-                self.logger.debug('make_request - status code: {}'.format(response.status))
-                assert response.status == 200
-                data = await response.json()
+            if method == 'get':
+                async with session.get(url, params=params, raise_for_status=True) as response:
+                    self.logger.debug('make_request - status code: {}'.format(response.status))
+                    data = await response.json()
+            elif method == 'post':
+                async with session.post(url, params=params, raise_for_status=True) as response:
+                    self.logger.debug('make_request - status code: {}'.format(response.status))
+                    data = await response.json()
 
         return data
 

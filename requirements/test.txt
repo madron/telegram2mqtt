@@ -1,3 +1,4 @@
 -r common.txt
 -r compiled.txt
 coverage==5.3
+aioresponses==0.7.1
