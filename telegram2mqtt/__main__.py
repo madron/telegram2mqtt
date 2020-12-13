@@ -15,12 +15,26 @@ LOGLEVEL_CHOICES = [
 ]
 TELEGRAM_API_TOKEN = os.getenv('TELEGRAM_API_TOKEN', None)
 
+class StoreDict(argparse.Action):
+     def __call__(self, parser, namespace, values, option_string=None):
+         kwargs = {}
+         for kv in values.split(','):
+             k, v = kv.split('=')
+             kwargs[k] = v
+         setattr(namespace, self.dest, kwargs)
+
 
 def main():
     # ArgumentParser
     parser = argparse.ArgumentParser(prog='telegram2mqtt', description='Telegram to Mqtt gateway')
     parser.add_argument('-t', '--token', metavar='TOKEN', type=str,
                         default=TELEGRAM_API_TOKEN, help='Telegram api token. Default from TELEGRAM_API_TOKEN env var.')
+    parser.add_argument('--hostname', metavar='HOST', type=str, default='localhost')
+    parser.add_argument('--port', metavar='PORT', type=int, default=1883)
+    parser.add_argument('--username', metavar='USER', type=str)
+    parser.add_argument('--password', metavar='PASS', type=str)
+    parser.add_argument('--prefix', metavar='PASS', type=str, default='telegram')
+    parser.add_argument('--chat', action=StoreDict, metavar="name=id,name=id...")
     parser.add_argument('--loglevel', metavar='LEVEL', type=str,
                         default=DEFAULT_LOGLEVEL, choices=LOGLEVEL_CHOICES,
                         help="Log level. Default: '{}'".format(DEFAULT_LOGLEVEL))
